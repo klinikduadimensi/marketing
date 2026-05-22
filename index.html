@@ -10,6 +10,7 @@
     <link rel="apple-touch-icon" href="https://lh3.googleusercontent.com/d/196-yYlDwDc-tUVDTslzPAlBWTmf4ZbWg">
     
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.lordicon.com/lordicon.js"></script>
     <script>
         tailwind.config = {
             darkMode: 'class',
@@ -132,7 +133,6 @@
         const container = document.getElementById('links-container');
         const searchInput = document.getElementById('search-input');
         
-        // Elemen Login
         const loginOverlay = document.getElementById('login-overlay');
         const loginForm = document.getElementById('login-form');
         const passwordInput = document.getElementById('password-input');
@@ -142,11 +142,9 @@
         
         let allLinksData = []; 
 
-        // Cek apakah user sudah login sebelumnya dalam session ini
         document.addEventListener('DOMContentLoaded', () => {
             const savedPassword = sessionStorage.getItem('dd_auth_pass');
             if (savedPassword) {
-                // Sembunyikan form seketika dan langsung ambil data
                 loginOverlay.style.display = 'none';
                 container.innerHTML = `
                     <div class="text-center py-10 text-gray-500 animate-pulse">
@@ -157,13 +155,11 @@
             }
         });
 
-        // Handle Submit Login
         loginForm.addEventListener('submit', async (e) => {
             e.preventDefault();
             const password = passwordInput.value.trim();
             if (!password) return;
 
-            // State Loading
             loginBtn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Memverifikasi...';
             loginBtn.disabled = true;
             loginError.classList.add('hidden');
@@ -171,7 +167,6 @@
             await fetchLinks(password);
         });
 
-        // Handle Logout
         logoutBtn.addEventListener('click', () => {
             sessionStorage.removeItem('dd_auth_pass');
             passwordInput.value = '';
@@ -183,21 +178,18 @@
 
         async function fetchLinks(password) {
             try {
-                // Menambahkan parameter password pada URL API
                 const response = await fetch(`${API_URL}?password=${encodeURIComponent(password)}`);
                 const result = await response.json();
 
                 if (result.status === 'success') {
-                    // Berhasil Login
                     sessionStorage.setItem('dd_auth_pass', password);
                     loginOverlay.style.opacity = '0';
                     setTimeout(() => { loginOverlay.style.display = 'none'; }, 300);
                     
-                    logoutBtn.classList.remove('hidden'); // Tampilkan tombol logout
+                    logoutBtn.classList.remove('hidden');
                     allLinksData = result.data; 
                     renderLinks(allLinksData); 
                 } else {
-                    // Gagal Login / Password Salah
                     handleAuthError(result.message || 'Password yang Anda masukkan salah.');
                 }
             } catch (error) {
@@ -225,6 +217,19 @@
 
         function createSafeId(str) {
             return str.replace(/[^a-zA-Z0-9]/g, '-').toLowerCase();
+        }
+
+        // --- FUNGSI HELPER UNTUK RENDER ICON LORDICON ATAU FONTAWESOME ---
+        function getIconHTML(iconStr, defaultClass) {
+            if (!iconStr || iconStr.trim() === '') {
+                return `<i class="${defaultClass}"></i>`;
+            }
+            // Cek apakah data dari spreadsheet berupa tag HTML (misal: <lord-icon ...>)
+            if (iconStr.trim().startsWith('<') && iconStr.trim().endsWith('>')) {
+                return iconStr;
+            }
+            // Jika bukan HTML, asumsikan itu adalah FontAwesome class
+            return `<i class="${iconStr}"></i>`;
         }
 
         // --- SEARCH LOGIC ---
@@ -257,7 +262,9 @@
                     : '';
                 container.innerHTML += `
                     <a href="${item.Link}" target="_blank" class="flex items-center w-full p-4 mb-2 bg-white dark:bg-gray-800 rounded-xl shadow-sm hover:shadow-md transition-all border border-transparent hover:border-primary group">
-                        <div class="w-10 flex justify-center text-primary text-xl group-hover:scale-110 transition-transform"><i class="${item.Icon || 'fa-solid fa-link'}"></i></div>
+                        <div class="w-10 flex justify-center text-primary text-xl group-hover:scale-110 transition-transform">
+                            ${getIconHTML(item.Icon, 'fa-solid fa-link')}
+                        </div>
                         <div class="flex-1 text-left flex flex-col justify-center">
                             <span class="font-bold leading-tight">${item.Judul}</span>
                             ${parentBadge}
@@ -281,7 +288,9 @@
                     
                     let childrenHTML = children.map(child => `
                         <a href="${child.Link}" target="_blank" class="flex items-center gap-3 p-3 bg-gray-50 hover:bg-gray-100 dark:bg-gray-800/80 dark:hover:bg-gray-700 rounded-lg transition-colors border border-transparent hover:border-primary group">
-                            <div class="text-primary group-hover:scale-110 transition-transform w-6 flex justify-center"><i class="${child.Icon || 'fa-solid fa-link'}"></i></div>
+                            <div class="text-primary group-hover:scale-110 transition-transform w-6 flex justify-center">
+                                ${getIconHTML(child.Icon, 'fa-solid fa-link')}
+                            </div>
                             <span class="font-medium text-sm">${child.Judul}</span>
                         </a>
                     `).join('');
@@ -289,7 +298,9 @@
                     container.innerHTML += `
                         <div class="w-full flex flex-col mb-1">
                             <button onclick="toggleAccordion('${folderId}')" class="flex items-center w-full p-4 bg-white dark:bg-gray-800 rounded-xl shadow-sm hover:shadow-md transition-all border border-transparent hover:border-primary group focus:outline-none focus:ring-2 focus:ring-primary/50 z-10">
-                                <div class="w-10 flex justify-center text-primary text-xl group-hover:scale-110 transition-transform"><i class="${item.Icon || 'fa-solid fa-folder'}"></i></div>
+                                <div class="w-10 flex justify-center text-primary text-xl group-hover:scale-110 transition-transform">
+                                    ${getIconHTML(item.Icon, 'fa-solid fa-folder')}
+                                </div>
                                 <span class="font-bold flex-1 text-left">${item.Judul}</span>
                                 <div class="w-8 flex justify-center text-gray-400"><i class="fa-solid fa-chevron-down transition-transform duration-300" id="icon-${folderId}"></i></div>
                             </button>
@@ -303,7 +314,9 @@
                 } else {
                     container.innerHTML += `
                         <a href="${item.Link}" target="_blank" class="flex items-center w-full p-4 mb-1 bg-white dark:bg-gray-800 rounded-xl shadow-sm hover:shadow-md transition-all border border-transparent hover:border-primary group">
-                            <div class="w-10 flex justify-center text-primary text-xl group-hover:scale-110 transition-transform"><i class="${item.Icon || 'fa-solid fa-link'}"></i></div>
+                            <div class="w-10 flex justify-center text-primary text-xl group-hover:scale-110 transition-transform">
+                                ${getIconHTML(item.Icon, 'fa-solid fa-link')}
+                            </div>
                             <span class="font-bold flex-1 text-left">${item.Judul}</span>
                             <div class="w-8 flex justify-center text-gray-300 dark:text-gray-600 group-hover:text-primary transition-colors"><i class="fa-solid fa-arrow-up-right-from-square text-sm"></i></div>
                         </a>
