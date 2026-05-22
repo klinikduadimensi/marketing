@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DUA DIMENSI</title>
+    <title>MARKETING DUA DIMENSI</title>
     
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="icon" type="image/x-icon" href="https://lh3.googleusercontent.com/d/196-yYlDwDc-tUVDTslzPAlBWTmf4ZbWg">
@@ -24,12 +24,36 @@
         }
     </script>
     <style>
-        /* Smooth transition for theme toggle */
         body { transition: background-color 0.3s ease, color 0.3s ease; }
         .accordion-content { transition: max-height 0.3s ease-in-out; overflow: hidden; max-height: 0; }
     </style>
 </head>
 <body class="bg-gray-50 text-gray-800 dark:bg-gray-900 dark:text-gray-100 min-h-screen flex flex-col items-center">
+
+    <div id="login-overlay" class="fixed inset-0 z-[100] bg-gray-50 dark:bg-gray-900 flex items-center justify-center p-6 transition-opacity duration-300">
+        <div class="w-full max-w-sm bg-white dark:bg-gray-800 rounded-2xl shadow-xl border border-gray-200 dark:border-gray-700 p-8">
+            <div class="text-center mb-6">
+                <div class="w-20 h-20 mx-auto rounded-full overflow-hidden border-2 border-primary mb-4 shadow-sm">
+                    <img src="https://lh3.googleusercontent.com/d/196-yYlDwDc-tUVDTslzPAlBWTmf4ZbWg" alt="Logo Profile" class="w-full h-full object-cover">
+                </div>
+                <h2 class="text-2xl font-bold tracking-tight">Klinik Edukasi</h2>
+                <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">Masukkan password cabang Anda</p>
+            </div>
+
+            <form id="login-form" class="flex flex-col gap-4">
+                <div class="relative">
+                    <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-gray-400">
+                        <i class="fa-solid fa-lock"></i>
+                    </div>
+                    <input type="password" id="password-input" class="bg-gray-100 dark:bg-gray-900/80 border border-gray-200 dark:border-gray-700 text-gray-900 dark:text-white rounded-xl focus:ring-2 focus:ring-primary block w-full pl-11 p-3.5 transition-all outline-none" placeholder="Password" required>
+                </div>
+                <button type="submit" id="login-btn" class="w-full bg-primary hover:bg-primaryHover text-white font-bold py-3.5 rounded-xl transition-all shadow-md hover:shadow-lg flex justify-center items-center gap-2">
+                    <span>Akses Layanan</span>
+                </button>
+                <div id="login-error" class="text-red-500 text-sm text-center hidden bg-red-50 dark:bg-red-900/20 p-2 rounded-lg font-medium transition-all"></div>
+            </form>
+        </div>
+    </div>
 
     <div class="w-full max-w-lg min-h-screen flex flex-col relative shadow-xl bg-white dark:bg-gray-800/50 sm:border-x border-gray-200 dark:border-gray-800">
         
@@ -40,9 +64,14 @@
                 </div>
                 <h1 class="font-bold text-lg tracking-tight">Marketing Dua Dimensi</h1>
             </div>
-            <button id="theme-toggle" class="w-10 h-10 rounded-full hover:bg-gray-100 dark:bg-gray-800 transition-colors flex items-center justify-center text-gray-500 dark:text-gray-400">
-                <i class="fa-solid fa-moon text-xl" id="theme-icon"></i>
-            </button>
+            <div class="flex gap-2">
+                <button id="logout-btn" class="w-10 h-10 rounded-full hover:bg-red-50 dark:hover:bg-red-900/20 text-red-500 transition-colors flex items-center justify-center hidden" title="Keluar">
+                    <i class="fa-solid fa-right-from-bracket"></i>
+                </button>
+                <button id="theme-toggle" class="w-10 h-10 rounded-full hover:bg-gray-100 dark:bg-gray-800 transition-colors flex items-center justify-center text-gray-500 dark:text-gray-400">
+                    <i class="fa-solid fa-moon text-xl" id="theme-icon"></i>
+                </button>
+            </div>
         </header>
 
         <div class="px-6 pt-6 w-full">
@@ -55,9 +84,9 @@
         </div>
 
         <main class="flex-1 w-full px-6 py-6 flex flex-col gap-4" id="links-container">
-            <div class="text-center py-10 text-gray-500 animate-pulse">
-                <i class="fa-solid fa-circle-notch fa-spin text-3xl mb-3 text-primary"></i>
-                <p>Memuat layanan</p>
+            <div class="text-center py-10 text-gray-500">
+                <i class="fa-solid fa-lock text-4xl mb-3 opacity-40"></i>
+                <p>Menunggu Autentikasi...</p>
             </div>
         </main>
 
@@ -98,53 +127,122 @@
             }
         });
 
-        // --- FETCH AND RENDER DATA LOGIC ---
+        // --- AUTHENTICATION & FETCH LOGIC ---
         const API_URL = 'https://script.google.com/macros/s/AKfycbx-_2m-pPuc3bt40WL3tka06UNxnu-uCxmkL2xBLEFcsgGMk5KcP7iHFulloLct6bxYqQ/exec';
         const container = document.getElementById('links-container');
         const searchInput = document.getElementById('search-input');
         
-        let allLinksData = []; // Variabel untuk menyimpan master data
+        // Elemen Login
+        const loginOverlay = document.getElementById('login-overlay');
+        const loginForm = document.getElementById('login-form');
+        const passwordInput = document.getElementById('password-input');
+        const loginBtn = document.getElementById('login-btn');
+        const loginError = document.getElementById('login-error');
+        const logoutBtn = document.getElementById('logout-btn');
+        
+        let allLinksData = []; 
 
-        async function fetchLinks() {
-            try {
-                const response = await fetch(API_URL);
-                allLinksData = await response.json(); // Simpan data ke variabel global
-                renderLinks(allLinksData); // Render tampilan awal
-            } catch (error) {
+        // Cek apakah user sudah login sebelumnya dalam session ini
+        document.addEventListener('DOMContentLoaded', () => {
+            const savedPassword = sessionStorage.getItem('dd_auth_pass');
+            if (savedPassword) {
+                // Sembunyikan form seketika dan langsung ambil data
+                loginOverlay.style.display = 'none';
                 container.innerHTML = `
-                    <div class="text-center py-10 text-red-500 bg-red-50 dark:bg-red-900/20 rounded-xl">
-                        <i class="fa-solid fa-triangle-exclamation text-3xl mb-3"></i>
-                        <p>Gagal memuat data. Periksa koneksi atau URL API.</p>
+                    <div class="text-center py-10 text-gray-500 animate-pulse">
+                        <i class="fa-solid fa-circle-notch fa-spin text-3xl mb-3 text-primary"></i>
+                        <p>Memuat layanan...</p>
                     </div>`;
+                fetchLinks(savedPassword);
             }
+        });
+
+        // Handle Submit Login
+        loginForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const password = passwordInput.value.trim();
+            if (!password) return;
+
+            // State Loading
+            loginBtn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Memverifikasi...';
+            loginBtn.disabled = true;
+            loginError.classList.add('hidden');
+
+            await fetchLinks(password);
+        });
+
+        // Handle Logout
+        logoutBtn.addEventListener('click', () => {
+            sessionStorage.removeItem('dd_auth_pass');
+            passwordInput.value = '';
+            container.innerHTML = '';
+            allLinksData = [];
+            logoutBtn.classList.add('hidden');
+            loginOverlay.style.display = 'flex';
+        });
+
+        async function fetchLinks(password) {
+            try {
+                // Menambahkan parameter password pada URL API
+                const response = await fetch(`${API_URL}?password=${encodeURIComponent(password)}`);
+                const result = await response.json();
+
+                if (result.status === 'success') {
+                    // Berhasil Login
+                    sessionStorage.setItem('dd_auth_pass', password);
+                    loginOverlay.style.opacity = '0';
+                    setTimeout(() => { loginOverlay.style.display = 'none'; }, 300);
+                    
+                    logoutBtn.classList.remove('hidden'); // Tampilkan tombol logout
+                    allLinksData = result.data; 
+                    renderLinks(allLinksData); 
+                } else {
+                    // Gagal Login / Password Salah
+                    handleAuthError(result.message || 'Password yang Anda masukkan salah.');
+                }
+            } catch (error) {
+                handleAuthError('Gagal terhubung ke server. Periksa koneksi Anda.');
+            }
+        }
+
+        function handleAuthError(message) {
+            sessionStorage.removeItem('dd_auth_pass');
+            loginOverlay.style.display = 'flex';
+            loginOverlay.style.opacity = '1';
+            
+            loginBtn.innerHTML = '<span>Akses Layanan</span>';
+            loginBtn.disabled = false;
+            
+            loginError.textContent = message;
+            loginError.classList.remove('hidden');
+            
+            container.innerHTML = `
+                <div class="text-center py-10 text-gray-500">
+                    <i class="fa-solid fa-lock text-4xl mb-3 opacity-40"></i>
+                    <p>Menunggu Autentikasi...</p>
+                </div>`;
         }
 
         function createSafeId(str) {
             return str.replace(/[^a-zA-Z0-9]/g, '-').toLowerCase();
         }
 
-        // --- LOGIKA PENCARIAN (SEARCH LOGIC) ---
+        // --- SEARCH LOGIC ---
         searchInput.addEventListener('input', (e) => {
             const query = e.target.value.toLowerCase().trim();
-            
-            // Jika pencarian kosong, kembalikan ke tampilan folder normal
             if (query === '') {
                 renderLinks(allLinksData);
                 return;
             }
-
-            // Filter data: Cari judul yang cocok DAN pastikan itu adalah 'Link' (bukan Folder)
             const filteredData = allLinksData.filter(item => 
                 item.Judul.toLowerCase().includes(query) && item.Tipe.toLowerCase() !== 'folder'
             );
-
             renderSearchResults(filteredData);
         });
 
-        // --- FUNGSI RENDER HASIL PENCARIAN ---
+        // --- RENDER SEARCH RESULTS ---
         function renderSearchResults(data) {
             container.innerHTML = ''; 
-            
             if (data.length === 0) {
                 container.innerHTML = `
                     <div class="text-center py-10 text-gray-500">
@@ -153,13 +251,10 @@
                     </div>`;
                 return;
             }
-
             data.forEach(item => {
-                // Buat label kecil (badge) jika link tersebut berada di dalam sebuah folder
                 let parentBadge = item.Parent && item.Parent.trim() !== '' 
                     ? `<span class="mt-1 text-[11px] px-2 py-0.5 bg-gray-200 dark:bg-gray-700 rounded text-gray-600 dark:text-gray-300 inline-block w-max"><i class="fa-solid fa-folder-open mr-1"></i>${item.Parent}</span>` 
                     : '';
-
                 container.innerHTML += `
                     <a href="${item.Link}" target="_blank" class="flex items-center w-full p-4 mb-2 bg-white dark:bg-gray-800 rounded-xl shadow-sm hover:shadow-md transition-all border border-transparent hover:border-primary group">
                         <div class="w-10 flex justify-center text-primary text-xl group-hover:scale-110 transition-transform"><i class="${item.Icon || 'fa-solid fa-link'}"></i></div>
@@ -173,10 +268,9 @@
             });
         }
 
-        // --- FUNGSI RENDER TAMPILAN NORMAL (DENGAN FOLDER) ---
+        // --- RENDER NORMAL VIEW ---
         function renderLinks(data) {
             container.innerHTML = ''; 
-            
             const topLevelItems = data.filter(item => !item.Parent || item.Parent.trim() === '');
             const childItems = data.filter(item => item.Parent && item.Parent.trim() !== '');
 
@@ -231,8 +325,6 @@
                 icon.style.transform = 'rotate(180deg)';
             }
         }
-
-        document.addEventListener('DOMContentLoaded', fetchLinks);
     </script>
 </body>
 </html>
