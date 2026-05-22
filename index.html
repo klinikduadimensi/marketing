@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="id" class="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DUA DIMENSI</title>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="icon" type="image/x-icon" href="https://lh3.googleusercontent.com/d/196-yYlDwDc-tUVDTslzPAlBWTmf4ZbWg">
+    <link rel="apple-touch-icon" href="https://lh3.googleusercontent.com/d/196-yYlDwDc-tUVDTslzPAlBWTmf4ZbWg">
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#0e58a6',
+                        primaryHover: '#0b4785'
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Smooth transition for theme toggle */
+        body { transition: background-color 0.3s ease, color 0.3s ease; }
+        .accordion-content { transition: max-height 0.3s ease-in-out; overflow: hidden; max-height: 0; }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-800 dark:bg-gray-900 dark:text-gray-100 min-h-screen flex flex-col items-center">
+
+    <div class="w-full max-w-lg min-h-screen flex flex-col relative shadow-xl bg-white dark:bg-gray-800/50 sm:border-x border-gray-200 dark:border-gray-800">
+        
+        <header class="sticky top-0 z-50 bg-white/80 dark:bg-gray-900/80 backdrop-blur-md px-6 py-4 flex justify-between items-center border-b border-gray-200 dark:border-gray-700">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-full overflow-hidden flex-shrink-0 border border-gray-200 dark:border-gray-700">
+                    <img src="https://lh3.googleusercontent.com/d/196-yYlDwDc-tUVDTslzPAlBWTmf4ZbWg" alt="Logo Profile" class="w-full h-full object-cover">
+                </div>
+                <h1 class="font-bold text-lg tracking-tight">Dua Dimensi</h1>
+            </div>
+            <button id="theme-toggle" class="w-10 h-10 rounded-full hover:bg-gray-100 dark:bg-gray-800 transition-colors flex items-center justify-center text-gray-500 dark:text-gray-400">
+                <i class="fa-solid fa-moon text-xl" id="theme-icon"></i>
+            </button>
+        </header>
+
+        <div class="px-6 pt-6 w-full">
+            <div class="relative">
+                <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-gray-400">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                </div>
+                <input type="text" id="search-input" class="bg-gray-100 dark:bg-gray-800/80 border-0 text-gray-900 dark:text-white text-sm rounded-xl focus:ring-2 focus:ring-primary block w-full pl-11 p-3.5 transition-all shadow-inner" placeholder="Pencarian">
+            </div>
+        </div>
+
+        <main class="flex-1 w-full px-6 py-6 flex flex-col gap-4" id="links-container">
+            <div class="text-center py-10 text-gray-500 animate-pulse">
+                <i class="fa-solid fa-circle-notch fa-spin text-3xl mb-3 text-primary"></i>
+                <p>Memuat layanan</p>
+            </div>
+        </main>
+
+        <footer class="mt-auto px-6 py-8 border-t border-gray-200 dark:border-gray-800 text-center">
+            <div class="flex justify-center gap-4 mb-4">
+                <a href="https://api.whatsapp.com/send?phone=6281127012229&text=Saya%20mau%20bertanya%20program%20di%20Dua%20Dimensi%20Yogyakarta%3F" target="_blank" class="w-10 h-10 rounded-full bg-gray-100 dark:bg-gray-800 flex items-center justify-center text-gray-600 dark:text-gray-400 hover:bg-primary hover:text-white dark:hover:bg-primary dark:hover:text-white transition-all shadow-sm hover:shadow-md">
+                    <i class="fa-brands fa-whatsapp text-xl"></i>
+                </a>
+                <a href="https://www.instagram.com/duadimensi.co.id/" target="_blank" class="w-10 h-10 rounded-full bg-gray-100 dark:bg-gray-800 flex items-center justify-center text-gray-600 dark:text-gray-400 hover:bg-primary hover:text-white dark:hover:bg-primary dark:hover:text-white transition-all shadow-sm hover:shadow-md">
+                    <i class="fa-brands fa-instagram text-xl"></i>
+                </a>
+            </div>
+            <p class="text-sm text-gray-500 dark:text-gray-400">© 2026 Klinik Edukasi Dua Dimensi.<br>All Rights Reserved.</p>
+        </footer>
+    </div>
+
+    <script>
+        // --- THEME TOGGLE LOGIC ---
+        const htmlElement = document.documentElement;
+        const themeIcon = document.getElementById('theme-icon');
+        const themeToggleBtn = document.getElementById('theme-toggle');
+        
+        if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            htmlElement.classList.add('dark');
+            themeIcon.classList.replace('fa-moon', 'fa-sun');
+        } else {
+            htmlElement.classList.remove('dark');
+        }
+
+        themeToggleBtn.addEventListener('click', () => {
+            htmlElement.classList.toggle('dark');
+            if (htmlElement.classList.contains('dark')) {
+                localStorage.theme = 'dark';
+                themeIcon.classList.replace('fa-moon', 'fa-sun');
+            } else {
+                localStorage.theme = 'light';
+                themeIcon.classList.replace('fa-sun', 'fa-moon');
+            }
+        });
+
+        // --- FETCH AND RENDER DATA LOGIC ---
+        const API_URL = 'https://script.google.com/macros/s/AKfycbx-_2m-pPuc3bt40WL3tka06UNxnu-uCxmkL2xBLEFcsgGMk5KcP7iHFulloLct6bxYqQ/exec';
+        const container = document.getElementById('links-container');
+        const searchInput = document.getElementById('search-input');
+        
+        let allLinksData = []; // Variabel untuk menyimpan master data
+
+        async function fetchLinks() {
+            try {
+                const response = await fetch(API_URL);
+                allLinksData = await response.json(); // Simpan data ke variabel global
+                renderLinks(allLinksData); // Render tampilan awal
+            } catch (error) {
+                container.innerHTML = `
+                    <div class="text-center py-10 text-red-500 bg-red-50 dark:bg-red-900/20 rounded-xl">
+                        <i class="fa-solid fa-triangle-exclamation text-3xl mb-3"></i>
+                        <p>Gagal memuat data. Periksa koneksi atau URL API.</p>
+                    </div>`;
+            }
+        }
+
+        function createSafeId(str) {
+            return str.replace(/[^a-zA-Z0-9]/g, '-').toLowerCase();
+        }
+
+        // --- LOGIKA PENCARIAN (SEARCH LOGIC) ---
+        searchInput.addEventListener('input', (e) => {
+            const query = e.target.value.toLowerCase().trim();
+            
+            // Jika pencarian kosong, kembalikan ke tampilan folder normal
+            if (query === '') {
+                renderLinks(allLinksData);
+                return;
+            }
+
+            // Filter data: Cari judul yang cocok DAN pastikan itu adalah 'Link' (bukan Folder)
+            const filteredData = allLinksData.filter(item => 
+                item.Judul.toLowerCase().includes(query) && item.Tipe.toLowerCase() !== 'folder'
+            );
+
+            renderSearchResults(filteredData);
+        });
+
+        // --- FUNGSI RENDER HASIL PENCARIAN ---
+        function renderSearchResults(data) {
+            container.innerHTML = ''; 
+            
+            if (data.length === 0) {
+                container.innerHTML = `
+                    <div class="text-center py-10 text-gray-500">
+                        <i class="fa-solid fa-magnifying-glass-minus text-4xl mb-3 opacity-40"></i>
+                        <p>Tidak ada layanan yang ditemukan.</p>
+                    </div>`;
+                return;
+            }
+
+            data.forEach(item => {
+                // Buat label kecil (badge) jika link tersebut berada di dalam sebuah folder
+                let parentBadge = item.Parent && item.Parent.trim() !== '' 
+                    ? `<span class="mt-1 text-[11px] px-2 py-0.5 bg-gray-200 dark:bg-gray-700 rounded text-gray-600 dark:text-gray-300 inline-block w-max"><i class="fa-solid fa-folder-open mr-1"></i>${item.Parent}</span>` 
+                    : '';
+
+                container.innerHTML += `
+                    <a href="${item.Link}" target="_blank" class="flex items-center w-full p-4 mb-2 bg-white dark:bg-gray-800 rounded-xl shadow-sm hover:shadow-md transition-all border border-transparent hover:border-primary group">
+                        <div class="w-10 flex justify-center text-primary text-xl group-hover:scale-110 transition-transform"><i class="${item.Icon || 'fa-solid fa-link'}"></i></div>
+                        <div class="flex-1 text-left flex flex-col justify-center">
+                            <span class="font-bold leading-tight">${item.Judul}</span>
+                            ${parentBadge}
+                        </div>
+                        <div class="w-8 flex justify-center text-gray-300 dark:text-gray-600 group-hover:text-primary transition-colors"><i class="fa-solid fa-arrow-up-right-from-square text-sm"></i></div>
+                    </a>
+                `;
+            });
+        }
+
+        // --- FUNGSI RENDER TAMPILAN NORMAL (DENGAN FOLDER) ---
+        function renderLinks(data) {
+            container.innerHTML = ''; 
+            
+            const topLevelItems = data.filter(item => !item.Parent || item.Parent.trim() === '');
+            const childItems = data.filter(item => item.Parent && item.Parent.trim() !== '');
+
+            topLevelItems.forEach(item => {
+                if (item.Tipe.toLowerCase() === 'folder') {
+                    const children = childItems.filter(child => child.Parent === item.Judul);
+                    const folderId = createSafeId(item.Judul);
+                    
+                    let childrenHTML = children.map(child => `
+                        <a href="${child.Link}" target="_blank" class="flex items-center gap-3 p-3 bg-gray-50 hover:bg-gray-100 dark:bg-gray-800/80 dark:hover:bg-gray-700 rounded-lg transition-colors border border-transparent hover:border-primary group">
+                            <div class="text-primary group-hover:scale-110 transition-transform w-6 flex justify-center"><i class="${child.Icon || 'fa-solid fa-link'}"></i></div>
+                            <span class="font-medium text-sm">${child.Judul}</span>
+                        </a>
+                    `).join('');
+
+                    container.innerHTML += `
+                        <div class="w-full flex flex-col mb-1">
+                            <button onclick="toggleAccordion('${folderId}')" class="flex items-center w-full p-4 bg-white dark:bg-gray-800 rounded-xl shadow-sm hover:shadow-md transition-all border border-transparent hover:border-primary group focus:outline-none focus:ring-2 focus:ring-primary/50 z-10">
+                                <div class="w-10 flex justify-center text-primary text-xl group-hover:scale-110 transition-transform"><i class="${item.Icon || 'fa-solid fa-folder'}"></i></div>
+                                <span class="font-bold flex-1 text-left">${item.Judul}</span>
+                                <div class="w-8 flex justify-center text-gray-400"><i class="fa-solid fa-chevron-down transition-transform duration-300" id="icon-${folderId}"></i></div>
+                            </button>
+                            <div id="content-${folderId}" class="accordion-content bg-white dark:bg-gray-800 rounded-b-xl -mt-2 pt-2 shadow-sm border-x border-b border-gray-100 dark:border-gray-700">
+                                <div class="p-4 pt-2 flex flex-col gap-2 border-l-2 border-primary ml-6 mb-2 mr-4">
+                                    ${childrenHTML || '<p class="text-sm text-gray-400 italic">Folder kosong</p>'}
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                } else {
+                    container.innerHTML += `
+                        <a href="${item.Link}" target="_blank" class="flex items-center w-full p-4 mb-1 bg-white dark:bg-gray-800 rounded-xl shadow-sm hover:shadow-md transition-all border border-transparent hover:border-primary group">
+                            <div class="w-10 flex justify-center text-primary text-xl group-hover:scale-110 transition-transform"><i class="${item.Icon || 'fa-solid fa-link'}"></i></div>
+                            <span class="font-bold flex-1 text-left">${item.Judul}</span>
+                            <div class="w-8 flex justify-center text-gray-300 dark:text-gray-600 group-hover:text-primary transition-colors"><i class="fa-solid fa-arrow-up-right-from-square text-sm"></i></div>
+                        </a>
+                    `;
+                }
+            });
+        }
+
+        // --- ACCORDION LOGIC ---
+        function toggleAccordion(id) {
+            const content = document.getElementById(`content-${id}`);
+            const icon = document.getElementById(`icon-${id}`);
+            
+            if (content.style.maxHeight) {
+                content.style.maxHeight = null;
+                icon.style.transform = 'rotate(0deg)';
+            } else {
+                content.style.maxHeight = content.scrollHeight + "px";
+                icon.style.transform = 'rotate(180deg)';
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', fetchLinks);
+    </script>
+</body>
+</html>
