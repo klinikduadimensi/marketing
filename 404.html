@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/x-icon" href="https://lh3.googleusercontent.com/d/196-yYlDwDc-tUVDTslzPAlBWTmf4ZbWg">
+    <link rel="apple-touch-icon" href="https://lh3.googleusercontent.com/d/196-yYlDwDc-tUVDTslzPAlBWTmf4ZbWg">
+    <title>Halaman Tidak Ditemukan</title>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <style>
+        /* === IMPORT FONT === */
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Lato:wght@400;700&display=swap');
+
+        /* === RESET & DASAR === */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: #F8FAFC; 
+            color: #1F2937; 
+            font-family: 'Inter', sans-serif;
+            -webkit-font-smoothing: antialiased;
+            margin: 0;
+            display: flex;
+            flex-direction: column; /* Membuat layout atas-bawah untuk footer */
+            min-height: 100vh; 
+        }
+
+        ::selection { background-color: rgba(14, 88, 166, 0.2); }
+        ::-moz-selection { background-color: rgba(14, 88, 166, 0.2); }
+
+        a {
+            color: #0e58a6;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        a:hover { color: #0a4280; }
+
+        /* === PEMBUNGKUS KONTEN 404 (Diubah agar di tengah) === */
+        .main-wrapper {
+            flex: 1; /* Mengisi sisa layar sehingga footer selalu terdorong ke bawah */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            padding: 40px 0;
+        }
+
+        #wrap {
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        #wrap::after {
+            content: "";
+            display: table;
+            clear: both;
+        }
+
+        /* === MAIN TEXT CONTENT === */
+        #main-content {
+            float: right;
+            max-width: 50%;
+            font-weight: 300;
+            font-size: 18px;
+            line-height: 1.6;
+            color: #4B5563; 
+        }
+
+        #main-content h1 {
+            margin: 0;
+            font-weight: 700;
+            font-size: 48px;
+            margin-bottom: 25px;
+            line-height: 1.2;
+            color: #111827; 
+        }
+
+        /* === SEARCH FORM === */
+        #search { margin-top: 35px; margin-bottom: 20px; position: relative; }
+
+        #search input[type='text'] {
+            width: 100%;
+            height: 50px;
+            padding: 0 20px;
+            background-color: #FFFFFF;
+            border: 2px solid #E5E7EB; 
+            outline: none;
+            font-size: 16px;
+            font-weight: 400;
+            color: #1F2937;
+            font-family: 'Inter', sans-serif;
+            transition: border-color 0.3s ease;
+            border-radius: 8px; 
+        }
+
+        #search input[type='text']:focus {
+            border-color: #0e58a6; 
+        }
+
+        #search .input-search {
+            position: absolute;
+            right: 5px;
+            top: 5px;
+            height: 40px;
+            padding: 0 20px;
+            background-color: #0e58a6; 
+            outline: none;
+            border: none;
+            font-family: 'Inter', sans-serif;
+            color: white;
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            text-align: center;
+            border-radius: 6px;
+        }
+
+        #search .input-search:hover {
+            background-color: #0a4280; 
+        }
+
+        /* === NAVIGATION BUTTONS === */
+        #navigation { margin-top: 25px; display: flex; flex-wrap: wrap; gap: 10px; }
+
+        #navigation a.navigation {
+            display: inline-block;
+            background-color: #FFFFFF;
+            border: 2px solid #E5E7EB;
+            padding: 10px 20px;
+            color: #374151;
+            font-weight: 500;
+            font-size: 15px;
+            border-radius: 8px;
+        }
+
+        #navigation a.navigation:hover {
+            background-color: #F3F4F6;
+            border-color: #D1D5DB;
+            color: #0e58a6; 
+        }
+
+        /* === WORDSEARCH === */
+        #wordsearch {
+            width: 45%;
+            float: left;
+        }
+
+        #wordsearch ul {
+            margin: 0;
+            padding: 0;
+            display: grid; 
+            grid-template-columns: repeat(8, 1fr); 
+            gap: 5px;
+        }
+
+        #wordsearch ul li {
+            background-color: #E5E7EB; 
+            list-style: none;
+            padding: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #9CA3AF; 
+            text-transform: uppercase;
+            font-size: 24px;
+            font-weight: 600;
+            transition: all 0.5s ease;
+            border-radius: 6px;
+        }
+
+        #wordsearch ul li.selected {
+            background-color: #0e58a6; 
+            color: #FFFFFF; 
+            box-shadow: 0 4px 10px rgba(14, 88, 166, 0.3); 
+        }
+
+        /* === FOOTER DUA DIMENSI === */
+        .dd-footer {
+            background-color: #083361;
+            color: #ffffff;
+            padding: 60px 20px 20px 20px;
+            font-family: 'Lato', sans-serif; /* Menggunakan font asli footer */
+        }
+
+        .dd-footer a {
+            color: inherit; /* Menimpa warna biru global agar link footer tetap putih/abu */
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 40px;
+            margin-bottom: 40px;
+        }
+
+        .footer-col h3 {
+            font-size: 18px;
+            font-weight: 700;
+            margin-top: 0;
+            margin-bottom: 15px;
+            color: #fff;
+            border-bottom: 2px solid #444;
+            padding-bottom: 10px;
+            display: inline-block;
+        }
+
+        .footer-col p {
+            font-size: 14px;
+            line-height: 1.6;
+            margin: 0 0 10px 0;
+            color: #cccccc;
+        }
+
+        .footer-col ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .footer-col ul li {
+            margin-bottom: 10px;
+            font-size: 14px;
+            color: #cccccc;
+        }
+
+        .footer-col ul li a:hover, 
+        .footer-col p a:hover {
+            color: #4da6ff;
+        }
+
+        .mt-20 {
+            margin-top: 20px;
+        }
+
+        .footer-bottom {
+            max-width: 1200px;
+            margin: 0 auto;
+            text-align: center;
+            padding-top: 20px;
+            border-top: 1px solid #333;
+            font-size: 11px;
+            color: #fefefe;
+        }
+
+        .social-links {
+            display: flex;
+            gap: 15px;
+            margin-top: 15px;
+        }
+        
+        .social-links a {
+            font-size: 14px;
+            background: #0e58a6;
+            padding: 5px 12px;
+            border-radius: 4px;
+            color: #cccccc;
+        }
+
+        .social-links a:hover {
+            background: #4da6ff;
+            color: #fff;
+        }
+
+        /* === RESPONSIVE CSS === */
+        @media all and (max-width: 899px) {
+            #wrap { width: 95%; }
+            #main-content h1 { font-size: 36px; }
+        }
+
+        @media all and (max-width: 799px) {
+            #wordsearch { width: 80%; float: none; margin: 0 auto 40px auto; }
+            #wordsearch ul li { font-size: 4vw; }
+            #main-content { float: none; width: 100%; max-width: 100%; text-align: center; }
+            #main-content h1 { text-align: center; }
+            #search input[type='text'] { padding-right: 80px; }
+            #navigation { justify-content: center; }
+        }
+
+        @media all and (max-width: 499px) {
+            #main-content h1 { font-size: 28px; }
+            #wordsearch ul { gap: 3px; }
+        }
+    </style>
+</head>
+<body>
+
+  <div class="main-wrapper">
+      <div id="wrap">
+        <div id="wordsearch">
+          <ul>
+            <li>k</li> <li>v</li> <li>n</li> <li>z</li> <li>i</li> <li>x</li> <li>m</li> <li>e</li>
+            <li>t</li> <li>a</li> <li>x</li> <li>l</li> <li class="one">4</li> <li class="two">0</li> <li class="three">4</li> <li>y</li>
+            <li>y</li> <li>w</li> <li>v</li> <li>b</li> <li>o</li> <li>q</li> <li>d</li> <li>y</li>
+            <li>p</li> <li>a</li> <li class="four">p</li> <li class="five">a</li> <li class="six">g</li> <li class="seven">e</li> <li>v</li> <li>j</li>
+            <li>a</li> <li class="eight">n</li> <li class="nine">o</li> <li class="ten">t</li> <li>s</li> <li>c</li> <li>e</li> <li>w</li>
+            <li>v</li> <li>x</li> <li>e</li> <li>p</li> <li>c</li> <li>f</li> <li>h</li> <li>q</li>
+            <li>e</li> <li class="eleven">f</li> <li class="twelve">o</li> <li class="thirteen">u</li> <li class="fourteen">n</li> <li class="fifteen">d</li> <li>s</li> <li>w</li>
+            <li>q</li> <li>v</li> <li>o</li> <li>s</li> <li>m</li> <li>v</li> <li>f</li> <li>u</li>
+          </ul>
+        </div>
+
+        <div id="main-content">
+          <h1>Maaf, halaman tidak ditemukan.</h1>
+
+          <p>Sepertinya halaman yang Anda cari tidak dapat ditemukan. Mungkin halaman tersebut telah dipindahkan, dihapus, atau sedang tidak tersedia untuk sementara waktu.</p>
+          <p>Coba periksa kembali URL yang Anda masukkan atau gunakan navigasi di bawah ini untuk menemukan apa yang Anda butuhkan.</p>
+
+          <div id="search">
+            <form>
+              <input type="text" placeholder="Cari di situs kami..." />
+              <button type="button" class="input-search">Cari</button>
+            </form>
+          </div>
+
+          <div id="navigation">
+            <a class="navigation" href="https://klinikduadimensi.github.io/link/">Beranda</a>
+            <a class="navigation" href="https://duadimensi.co.id/tentang">Tentang Kami</a>
+            <a class="navigation" href="https://duadimensi.co.id/cabang">Peta Situs</a>
+            <a class="navigation" href="https://api.whatsapp.com/send?phone=6281127012229&text=Saya%20mau%20bertanya" target="_blank">Kontak</a>
+          </div>
+        </div>
+      </div>
+  </div>
+
+  <footer class="dd-footer">
+      <div class="footer-content">
+          
+          <div class="footer-col">
+              <h3>Dua Dimensi</h3>
+              <p><strong>PT. NEUTRON BARU YOGYAKARTA</strong></p>
+              <p>Klinik Edukasi DUA DIMENSI Yogyakarta atau sebelumnya Bimbingan Belajar NEW NEUTRON Yogyakarta adalah bimbingan yang telah berpengalaman bergerak dibidang pendidikan.</p>
+          </div>
+
+          <div class="footer-col">
+              <h3>Alamat</h3>
+              <p><a href="https://maps.app.goo.gl/4KiF9zAKyqgYqVeL6" target="_blank" rel="noopener">Jl. Taman Siswa No.162, Wirogunan, Kec. Mergangsan, Kota Yogyakarta, Daerah Istimewa Yogyakarta 55151</a></p>
+              
+              <h3 class="mt-20">Kontak</h3>
+              <p><a href="https://wa.me/027420420013" target="_blank" rel="noopener">(0274) 420013</a></p>
+              <p>official@duadimensi.co.id</p>
+              <p>081127012229</p>
+
+              <div class="social-links">
+                  <a href="https://www.instagram.com/duadimensi.co.id/" target="_blank" rel="noopener">Instagram</a>
+                  <a href="https://wa.me/6281127012229" target="_blank" rel="noopener">WhatsApp</a>
+              </div>
+          </div>
+
+          <div class="footer-col">
+              <h3>Program</h3>
+              <ul>
+                  <li>Reguler Prestasi</li>
+                  <li>Privat Prestasi</li>
+                  <li>Program Minggu</li>
+                  <li>Program PILOT</li>
+              </ul>
+
+              <h3 class="mt-20">Bimbel Kelas</h3>
+              <ul>
+                  <li><a href="/SD">4, 5, 6 SD</a></li>
+                  <li><a href="/SMP">1, 2, 3 SMP</a></li>
+                  <li><a href="/SMA">1, 2, 3 SMA</a></li>
+                  <li><a href="/mhs">Mahasiswa</a></li>
+              </ul>
+          </div>
+
+          <div class="footer-col">
+              <h3>Halaman</h3>
+              <ul>
+                  <li><a href="/">Home</a></li>
+                  <li><a href="/tentang">About</a></li>
+                  <li><a href="/program">Program</a></li>
+                  <li><a href="/cabang">Cabang</a></li>
+              </ul>
+          </div>
+
+      </div>
+
+      <div class="footer-bottom">
+          <p>© 2026 Klinik Edukasi Dua Dimensi Yogyakarta. All Rights Reserved.</p>
+      </div>
+  </footer>
+
+  <script>
+    /* Mengatur aspek rasio kotak huruf agar selalu persegi */
+    function adjustWordsearchHeight() {
+        var liWidth = $("#wordsearch ul li").width();
+        $("#wordsearch ul li").css("height", liWidth);
+    }
+
+    $(window).on('load resize', function () {
+        adjustWordsearchHeight();
+    });
+
+    /* Animasi JQuery untuk menyorot kata kunci */
+    $(function () {
+        const classes = [".one", ".two", ".three", ".four", ".five", ".six", ".seven", ".eight", ".nine", ".ten", ".eleven", ".twelve", ".thirteen", ".fourteen", ".fifteen"];
+        let delay = 1000; // Penundaan awal (1 detik)
+
+        classes.forEach(function(className, index) {
+            setTimeout(function() {
+                $(className).addClass("selected");
+            }, delay + (index * 250)); // Muncul setiap 0.25 detik
+        });
+    });
+  </script>
+
+</body>
+</html>
