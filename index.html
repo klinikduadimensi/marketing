@@ -287,12 +287,17 @@
                     const folderId = createSafeId(item.Judul);
                     
                     let childrenHTML = children.map(child => `
-                        <a href="${child.Link}" target="_blank" class="flex items-center gap-3 p-3 bg-gray-50 hover:bg-gray-100 dark:bg-gray-800/80 dark:hover:bg-gray-700 rounded-lg transition-colors border border-transparent hover:border-primary group">
-                            <div class="text-primary group-hover:scale-110 transition-transform w-6 flex justify-center">
-                                ${getIconHTML(child.Icon, 'fa-solid fa-link')}
-                            </div>
-                            <span class="font-medium text-sm">${child.Judul}</span>
-                        </a>
+                        <div class="flex items-center gap-2">
+                            <a href="${child.Link}" target="_blank" class="flex-1 flex items-center gap-3 p-3 bg-gray-50 hover:bg-gray-100 dark:bg-gray-800/80 dark:hover:bg-gray-700 rounded-lg transition-colors border border-transparent hover:border-primary group">
+                                <div class="text-primary group-hover:scale-110 transition-transform w-6 flex justify-center">
+                                    ${getIconHTML(child.Icon, 'fa-solid fa-link')}
+                                </div>
+                                <span class="font-medium text-sm flex-1">${child.Judul}</span>
+                            </a>
+                            <button onclick="copyToClipboard('${child.Link}', this)" class="flex-shrink-0 w-11 h-11 flex items-center justify-center bg-gray-50 hover:bg-gray-200 dark:bg-gray-800/80 dark:hover:bg-gray-700 rounded-lg transition-colors text-gray-500 hover:text-primary dark:text-gray-400 dark:hover:text-primary border border-transparent hover:border-primary" title="Salin Link">
+                                <i class="fa-regular fa-copy text-lg"></i>
+                            </button>
+                        </div>
                     `).join('');
 
                     container.innerHTML += `
@@ -338,6 +343,26 @@
                 icon.style.transform = 'rotate(180deg)';
             }
         }
+        
+        // --- COPY TO CLIPBOARD LOGIC ---
+        function copyToClipboard(text, btnElement) {
+            navigator.clipboard.writeText(text).then(() => {
+                // Memberikan efek visual: mengubah ikon copy menjadi centang hijau sementara
+                const icon = btnElement.querySelector('i');
+                const originalClass = icon.className;
+                
+                icon.className = 'fa-solid fa-check text-green-500 text-lg';
+                
+                // Kembalikan ke ikon semula setelah 2 detik
+                setTimeout(() => {
+                    icon.className = originalClass;
+                }, 2000);
+            }).catch(err => {
+                console.error('Gagal menyalin link: ', err);
+                alert('Browser tidak mendukung fitur copy otomatis, atau butuh izin khusus.');
+            });
+        }
+        
     </script>
 </body>
 </html>
